@@ -1,122 +1,106 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="layout" content="main"/>
-		<title>Welcome to Grails</title>
-		<style type="text/css" media="screen">
-			#status {
-				background-color: #eee;
-				border: .2em solid #fff;
-				margin: 2em 2em 1em;
-				padding: 1em;
-				width: 12em;
-				float: left;
-				-moz-box-shadow: 0px 0px 1.25em #ccc;
-				-webkit-box-shadow: 0px 0px 1.25em #ccc;
-				box-shadow: 0px 0px 1.25em #ccc;
-				-moz-border-radius: 0.6em;
-				-webkit-border-radius: 0.6em;
-				border-radius: 0.6em;
-			}
+<head>
+<meta name="layout" content="main" />
+<title>Welcome</title>
 
-			.ie6 #status {
-				display: inline; /* float double margin fix http://www.positioniseverything.net/explorer/doubled-margin.html */
-			}
-
-			#status ul {
-				font-size: 0.9em;
-				list-style-type: none;
-				margin-bottom: 0.6em;
-				padding: 0;
-			}
-
-			#status li {
-				line-height: 1.3;
-			}
-
-			#status h1 {
-				text-transform: uppercase;
-				font-size: 1.1em;
-				margin: 0 0 0.3em;
-			}
-
-			#page-body {
-				margin: 2em 1em 1.25em 18em;
-			}
-
-			h2 {
-				margin-top: 1em;
-				margin-bottom: 0.3em;
-				font-size: 1em;
-			}
-
-			p {
-				line-height: 1.5;
-				margin: 0.25em 0;
-			}
-
-			#controller-list ul {
-				list-style-position: inside;
-			}
-
-			#controller-list li {
-				line-height: 1.3;
-				list-style-position: inside;
-				margin: 0.25em 0;
-			}
-
-			@media screen and (max-width: 480px) {
-				#status {
-					display: none;
-				}
-
-				#page-body {
-					margin: 0 1em 1em;
-				}
-
-				#page-body h1 {
-					margin-top: 0;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<a href="#page-body" class="skip"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div id="status" role="complementary">
-			<h1>Application Status</h1>
-			<ul>
-				<li>App version: <g:meta name="app.version"/></li>
-				<li>Grails version: <g:meta name="app.grails.version"/></li>
-				<li>Groovy version: ${GroovySystem.getVersion()}</li>
-				<li>JVM version: ${System.getProperty('java.version')}</li>
-				<li>Reloading active: ${grails.util.Environment.reloadingAgentEnabled}</li>
-				<li>Controllers: ${grailsApplication.controllerClasses.size()}</li>
-				<li>Domains: ${grailsApplication.domainClasses.size()}</li>
-				<li>Services: ${grailsApplication.serviceClasses.size()}</li>
-				<li>Tag Libraries: ${grailsApplication.tagLibClasses.size()}</li>
-			</ul>
-			<h1>Installed Plugins</h1>
-			<ul>
-				<g:each var="plugin" in="${applicationContext.getBean('pluginManager').allPlugins}">
-					<li>${plugin.name} - ${plugin.version}</li>
-				</g:each>
-			</ul>
-		</div>
-		<div id="page-body" role="main">
-			<h1>Welcome to Grails</h1>
-			<p>Congratulations, you have successfully started your first Grails application! At the moment
-			   this is the default page, feel free to modify it to either redirect to a controller or display whatever
-			   content you may choose. Below is a list of controllers that are currently deployed in this application,
-			   click on each to execute its default action:</p>
-
-			<div id="controller-list" role="navigation">
-				<h2>Available Controllers:</h2>
-				<ul>
-					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
-					</g:each>
-				</ul>
+</head>
+<body>
+	<div id="container" style="margin-left: 50px">
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="row">
+					<h3>Playing Cards</h3>
+					<div class="col-xs-12">
+						<g:each in="${['D','H','C','S']}" var="suit">
+						<div class="row">
+						<g:each in="${model.Card.findAllBySuit(suit)}" var="card">
+									<a class="card"> ${card.suit}${card.value} <g:hiddenField name="cardVal"
+											id="cardValue" value="${card.identifier}" />
+									</a>
+						</g:each>
+								</div>
+								</g:each>
+					</div>
+				</div>
+				<div class="row">
+					<h3>Settings</h3>
+					Players
+					<g:select name="players" from="[1,2,3,4,5,6,7,8]" value="8"></g:select>
+				</div>
+				<div class="row">
+					<h3>Pocket Cards</h3>
+					<div id="pocket-pair">
+						<div id="cardA"></div>
+						<div id="cardB"></div>
+					</div>
+					<a id="clear">CLEAR</a>
+				</div>
+				<div class="row">
+					<h3>Community Cards</h3>
+					<div id="comunity-cards">
+						<div id="flopA"></div>
+						<div id="flopB"></div>
+						<div id="flopC"></div>
+						<div id="turn"></div>
+						<div id="river"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-8">
+				<div class="row">
+					<div id="result"></div>
+				</div>
 			</div>
 		</div>
-	</body>
+		<script>
+			$(".card").on("click",
+							function(c) {
+								var val = $(this).find("#cardValue").val()
+								if ($("#cardA").is(':empty')) {
+									$("#cardA").html(val)
+								} else if ($("#cardB").is(':empty')) {
+									$("#cardB").html(val)
+									jQuery.ajax({
+												url : '<g:createLink controller="evaluator" action="evaluatePocketPair"/>',
+												type : "POST",
+												data : {
+													"cardA" : $("#cardA").text(),
+													"cardB" : $("#cardB").text()
+												},
+												success : function(html) {
+													$("#result").html(html);
+												},
+												error : function(request,
+														status, error) {
+													handleAjaxError(request,
+															status, error);
+												}
+											})
+								}  else if ($("#flopA").is(':empty')) {
+									$("#flopA").html(val)
+								}
+								else if ($("#flopB").is(':empty')) {
+									$("#flopB").html(val)
+								}
+								else if ($("#flopC").is(':empty')) {
+									$("#flopC").html(val)
+								}else if ($("#turn").is(':empty')) {
+									$("#turn").html(val)
+								}else if ($("#river").is(':empty')) {
+									$("#river").html(val)
+								}
+							})
+			$("#clear").on("click", function(c) {
+				$("#cardA").empty()
+				$("#cardB").empty()
+				$("#flopA").empty()
+				$("#flopB").empty()
+				$("#flopC").empty()
+				$("#turn").empty()
+				$("#river").empty()
+			})
+		</script>
+	</div>
+</body>
 </html>
