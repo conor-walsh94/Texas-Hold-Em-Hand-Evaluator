@@ -1,0 +1,13 @@
+# Eclipse project files
+.project
+.classpath
+.settings/
+target
+settings
+regexp
+project
+classpath
+log
+grailsw
+wrapper
+
