@@ -28,8 +28,8 @@ class EvaluatorService {
 			overallScore = highScore
 		}
 		int gapOffset = getChenCardGapValue(pocketA, pocketB)
-		overallScore = overallScore - gapOffset
-		return Math.ceil(overallScore)
+		overallScore = overallScore + gapOffset
+		return overallScore
 	}
 
 	def getChenRatingForCard(Card card){
@@ -72,22 +72,20 @@ class EvaluatorService {
 				gapScore = 0
 				break;
 			case 1 :
-				gapScore = 1
+				gapScore = -1
 				break;
 			case 2 :
-				gapScore = 2
+				gapScore = -2
 				break;
 			case 3 :
-				gapScore = 4
+				gapScore = -4
 				break;
 			default :
-				gapScore = 5
+				gapScore = -5
 				break;
 		}
-		if(gap ==0 || gap == 1){
-			if((aVal < 12 && bVal < 12) && (bVal != aVal)){
-				gapScore = gapScore -1
-			}
+		if((aVal < 12 && bVal < 12) && (bVal != aVal)){
+			gapScore = gapScore+1
 		}
 		return gapScore
 	}
