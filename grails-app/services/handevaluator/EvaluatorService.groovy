@@ -1,6 +1,7 @@
 package handevaluator
 
 import grails.transaction.Transactional
+import handEvaluator.HandProbability
 import model.Card
 
 @Transactional
@@ -88,6 +89,11 @@ class EvaluatorService {
 			gapScore = gapScore+1
 		}
 		return gapScore
+	}
+	
+	def evaluateFlop(Card pocketA, Card pocketB, Card flopA, Card flopB, Card flopC){
+		HandProbability hp = new HandProbability()
+		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC])
 	}
 
 	def convertCardValueToInteger(String value){

@@ -68,7 +68,8 @@ div[class*='suit']:after {
 		<div class="row">
 			<div class="col-xs-5">
 				<div class="row">
-					<h3>Playing Cards</h3>
+					<h3>Select Cards</h3>
+					<button id="clear" type="button" class="btn btn-primary">New Hand</button>
 					<div class="col-xs-12">
 						<g:each in="${['D','H','C','S']}" var="suit">
 						<div class="row">
@@ -84,13 +85,14 @@ div[class*='suit']:after {
 					Players
 					<g:select name="players" from="[1,2,3,4,5,6,7,8]" value="8"></g:select>
 				</div>
-				<div class="row">
+			</div>
+			<div class="col-xs-7">
+			<div class="row">
 					<h3>Pocket Cards</h3>
 					<div id="pocket-pair">
 						<div id="cardA"></div>
 						<div id="cardB"></div>
 					</div>
-					<a id="clear">CLEAR</a>
 				</div>
 				<div class="row">
 					<h3>Community Cards</h3>
@@ -102,8 +104,6 @@ div[class*='suit']:after {
 						<div id="river"></div>
 					</div>
 				</div>
-			</div>
-			<div class="col-xs-7">
 				<div class="row">
 					<div id="result"></div>
 				</div>
@@ -157,6 +157,27 @@ div[class*='suit']:after {
 								data : {
 									"cardA" : $("#cardA").find("#cardValue").val(),
 									"cardB" : $("#cardB").find("#cardValue").val()
+								},
+								success : function(html) {
+									$("#result").html(html);
+								},
+								error : function(request,
+										status, error) {
+									handleAjaxError(request,
+											status, error);
+								}
+							})	
+						}
+						if(target == "#flopC"){
+							jQuery.ajax({
+								url : '<g:createLink controller="evaluator" action="evaluateFlop"/>',
+								type : "POST",
+								data : {
+									"cardA" : $("#cardA").find("#cardValue").val(),
+									"cardB" : $("#cardB").find("#cardValue").val(),
+									"flopA" : $("#flopA").find("#cardValue").val(),
+									"flopB" : $("#flopB").find("#cardValue").val(),
+									"flopC" : $("#flopC").find("#cardValue").val()
 								},
 								success : function(html) {
 									$("#result").html(html);
