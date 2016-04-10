@@ -1,6 +1,7 @@
 package handevaluator
 
 import grails.transaction.Transactional
+import handEvaluator.HandEvaluator
 import handEvaluator.HandProbability
 import model.Card
 
@@ -92,7 +93,7 @@ class EvaluatorService {
 	}
 	
 	def evaluateFlop(Card pocketA, Card pocketB, Card flopA, Card flopB, Card flopC){
-		HandProbability hp = new HandProbability()
+		HandEvaluator hp = new HandEvaluator()
 		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC])
 	}
 

@@ -8,5 +8,5 @@ class TwoPairDrawResult extends DrawResult {
 
 	void evaluate(ArrayList<Card> cards){
 	
-}
+	}
 }
