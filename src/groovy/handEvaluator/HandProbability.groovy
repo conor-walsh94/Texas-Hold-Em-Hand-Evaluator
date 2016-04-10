@@ -24,12 +24,25 @@ class HandProbability {
 		else{
 			boolean openEndedStraightDraw = checkForOpenEndedStraightDraw(cards)
 			if(openEndedStraightDraw){
+				println("open ended")
 				def turnProbability = calculateTurnProbability(8)
 				def riverProbability = calculateRiverProbability(8)
 				def turnOrRiverProbability = calculateTurnOrRiverProbability(8)
 				println(turnProbability)
 				println(riverProbability)
 				println(turnOrRiverProbability)
+			}
+			else{
+				boolean insideStraightDraw = checkForInsideStraightDraw(cards)
+				if(insideStraightDraw){
+					def turnProbability = calculateTurnProbability(4)
+					def riverProbability = calculateRiverProbability(4)
+					def turnOrRiverProbability = calculateTurnOrRiverProbability(4)
+					println("inside straight draw")
+					println(turnProbability)
+					println(riverProbability)
+					println(turnOrRiverProbability)
+				}
 			}
 		}
 		return "done"
@@ -123,9 +136,39 @@ class HandProbability {
 	boolean checkForOpenEndedStraightDraw(ArrayList<Card> cards){
 		def cardList = getHighestConsecutiveCardList(cards)
 		if(cardList.first() > 1 && cardList.last() < 14){
-			return true
+			if(cardList.size() >= 4){
+				return true
+			}
 		}
 		return false
+	}
+	
+	boolean checkForInsideStraightDraw(ArrayList<Card> cards){
+		def cardList = getHighestConsecutiveCardList(cards)
+		if(cardList.containsAll([1,2,3,4]) || cardList.containsAll([11,12,13,14]) || cardList.containsAll([10,11,12,14]) || cardList.containsAll([1,3,4,5])){
+			return true
+		}
+		def lists = []
+		def numericList = cards.collect{it.numericValue}
+		if(numericList.contains(14)){
+			numericList.add(1)
+		}
+		numericList.sort()
+		numericList = numericList.unique()
+		for(int i =1; i<numericList.size();i++){
+			if(numericList[i-1]+1 == numericList[i]){
+				lists.add([numericList[i-1], numericList[i] ])
+			}
+		}
+		if(lists.size()>1){
+			for(int i =1; i<lists.size();i++){
+				if(lists[i-1].last()+2 == lists[i].first()){
+					return true
+				}
+			}
+		}
+		return false
+		
 	}
 	
 	def getHighestConsecutiveCardList(ArrayList<Card> cards){
@@ -142,7 +185,7 @@ class HandProbability {
 		if(numericList.size() >= 5){
 			int previousValue = numericList[0]
 			currentConsecutiveCards.add(previousValue)
-			for(int i=1;i<5;i++){
+			for(int i=1;i<numericList.size();i++){
 				if(numericList[i] == previousValue +1){
 					currentConsecutiveCount++;
 					currentConsecutiveCards.add(numericList[i])
