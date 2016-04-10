@@ -22,6 +22,16 @@ class HandProbability {
 			}
 		}
 
+		boolean fourOfAKind = checkForFourOfAKind(cards)
+		if(fourOfAKind){
+			println("fours")
+		}
+		else{
+			boolean foursDraw = checkForFourOfAKindDraw(cards)
+			if(foursDraw){
+				println("foursDraw")
+			}
+		}
 		boolean flush = checkForFlush(cards)
 		if(flush){
 			println("flush made")
@@ -79,7 +89,7 @@ class HandProbability {
 
 
 	/********************************************************************************************************
-	 ************************************ INSIDE STRAIGHT FLUSH **********************************************
+	 ************************************ STRAIGHT FLUSH **********************************************
 	 *********************************************************************************************************/
 	boolean checkForStraightFlush(ArrayList<Card> cards){
 		boolean straightFlushMade = false;
@@ -108,7 +118,6 @@ class HandProbability {
 		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
 		suitedSets.each{
 			if(it.cards.size() >= 4){
-				println("checking open ended for" : it.cards) 
 				boolean flag = checkForOpenEndedStraightDraw(it.cards)
 				if(flag){
 					found = true
@@ -135,6 +144,38 @@ class HandProbability {
 		}
 		return found
 	}
+	
+	/********************************************************************************************************
+	 **************************************** FOUR OF A KIND *************************************************
+	 *********************************************************************************************************/
+	boolean checkForFourOfAKind(ArrayList<Card> cards){
+		int highestCount = 0;
+		[2,3,4,5,6,7,8,9,10,11,12,13,14].each{ num ->
+			int count = cards.findAll{it.numericValue == num }?.size()
+			if(count > highestCount){
+				highestCount = count
+			}
+		}
+		if(highestCount == 4){
+			return true
+		}
+		return false
+	}
+
+	boolean checkForFourOfAKindDraw(ArrayList<Card> cards){
+		int highestCount = 0;
+		[2,3,4,5,6,7,8,9,10,11,12,13,14].each{ num ->
+		int count = cards.findAll{it.numericValue == num }?.size()
+			if(count > highestCount){
+				highestCount = count
+			}
+		}
+		if(highestCount == 3){
+			return true
+		}
+		return false
+	}
+	
 	/********************************************************************************************************
 	 ********************************************** FLUSH **************************************************** 
 	 *********************************************************************************************************/
@@ -227,10 +268,11 @@ class HandProbability {
 		int currentConsecutiveCount = 1;
 		int bestConsecutiveCount = 0;
 		def currentConsecutiveCards = []
+		currentConsecutiveCards.add(numericList[0])
 		def bestConsecutiveCards = []
+		bestConsecutiveCards.add(numericList[0])
 		if(numericList.size() >= 2){
 			int previousValue = numericList[0]
-			currentConsecutiveCards.add(previousValue)
 			for(int i=1;i<numericList.size();i++){
 				if(numericList[i] == previousValue +1){
 					currentConsecutiveCount++;
