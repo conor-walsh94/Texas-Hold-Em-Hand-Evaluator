@@ -5,6 +5,11 @@ import model.Card
 class HandProbability {
 
 	def analyzeFlop(ArrayList<Card> cards){
+		boolean straightFlush = checkForStraightFlush(cards)
+		if(straightFlush){
+			println("straight flush made")
+		}
+		
 		boolean flush = checkForFlush(cards)
 		if(flush){
 			println("flush made")
@@ -65,17 +70,21 @@ class HandProbability {
 	 ************************************ INSIDE STRAIGHT FLUSH **********************************************
 	 *********************************************************************************************************/
 	boolean checkForStraightFlush(ArrayList<Card> cards){
-		def suitCounts = []
-		suitCounts.add(["name":"H","count":cards.findAll{it.suit == "H"}.size()])
-		suitCounts.add(["name":"D","count":cards.findAll{it.suit == "D"}.size()])
-		suitCounts.add(["name":"S","count":cards.findAll{it.suit == "S"}.size()])
-		suitCounts.add(["name":"C","count":cards.findAll{it.suit == "C"}.size()])
-		suitCounts.sort{-it.count}
-		int highestSuitCount = suitCounts[0].count
-		if(highestSuitCount >= 5){
-			return true
+		boolean straightFlushMade = false;
+		def suitedSets = []
+		suitedSets.add(["name":"H","cards":cards.findAll{it.suit == "H"}])
+		suitedSets.add(["name":"D","cards":cards.findAll{it.suit == "D"}])
+		suitedSets.add(["name":"S","cards":cards.findAll{it.suit == "S"}])
+		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
+		suitedSets.each{
+			if(it.cards.size() >= 5){
+				boolean straightMade = checkForStraight(it.cards)
+				if(straightMade){
+					straightFlushMade = true
+				}
+			}
 		}
-		return false
+		return straightFlushMade
 	}
 	
 	boolean checkForInsightStraightFlushDraw(ArrayList<Card> cards){
@@ -203,4 +212,5 @@ class HandProbability {
 		}
 		return bestConsecutiveCards
 	}
+	
 }
