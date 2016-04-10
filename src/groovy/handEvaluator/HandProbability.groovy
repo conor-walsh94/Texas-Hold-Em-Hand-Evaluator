@@ -44,6 +44,15 @@ class HandProbability {
 				def turnOrRiverProbability = calculateTurnOrRiverProbability(9)
 			}
 		}
+		
+		if(checkForFullHouse(cards)){
+			println("full house")
+		}
+		else{
+			if(checkForFullHouseDraw(cards)){
+				println("house draw")
+			}
+		}
 		boolean straight = checkForStraight(cards)
 		if(straight){
 			println("straight made")
@@ -70,6 +79,15 @@ class HandProbability {
 					println(riverProbability)
 					println(turnOrRiverProbability)
 				}
+			}
+		}
+		boolean threeOfAKind = checkForThreeOfAKind(cards)
+		if(threeOfAKind){
+			println("threes")
+		}
+		else{
+			if(checkForThreeOfAKindDraw(cards)){
+				println("threes draw")
 			}
 		}
 		boolean twoPair = checkForTwoPair(cards)
@@ -154,7 +172,7 @@ class HandProbability {
 		}
 		return found
 	}
-	
+
 	/********************************************************************************************************
 	 **************************************** FOUR OF A KIND *************************************************
 	 *********************************************************************************************************/
@@ -186,6 +204,27 @@ class HandProbability {
 		return false
 	}
 	
+	/********************************************************************************************************
+	 **************************************** Full House *************************************************
+	 *********************************************************************************************************/
+	boolean checkForFullHouse(ArrayList<Card> cards){
+		int highestCount = 0;
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		if(secondCount[3] >= 1 && secondCount[2]>= 1){
+			return true
+		}
+		return false
+	}
+
+	boolean checkForFullHouseDraw(ArrayList<Card> cards){
+		boolean twoPair = checkForTwoPair(cards)
+		boolean threes = checkForThreeOfAKind(cards)
+		if(twoPair || threes){
+			return true
+		}
+	}
+
 	/********************************************************************************************************
 	 ********************************************** FLUSH **************************************************** 
 	 *********************************************************************************************************/
@@ -301,7 +340,30 @@ class HandProbability {
 		}
 		return bestConsecutiveCards
 	}
-	
+
+	/********************************************************************************************************
+	 **************************************** THREE OF A KIND *************************************************
+	 *********************************************************************************************************/
+	boolean checkForThreeOfAKind(ArrayList<Card> cards){
+		int highestCount = 0;
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		if(secondCount[3] >= 1){
+			return true
+		}
+		return false
+	}
+
+	boolean checkForThreeOfAKindDraw(ArrayList<Card> cards){
+		int highestCount = 0;
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		if(secondCount[2] >= 1){
+			return true
+		}
+		return false
+	}
+
 	/********************************************************************************************************
 	 **************************************** TWO PAIR *************************************************
 	 *********************************************************************************************************/

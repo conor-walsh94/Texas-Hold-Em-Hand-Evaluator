@@ -1,5 +1,6 @@
 package handevaluator
 
+import handEvaluator.MadeHandChecker
 import model.Card
 
 class EvaluatorController {
@@ -23,6 +24,8 @@ class EvaluatorController {
 		Card flopCardA = Card.findByIdentifier(flopA)
 		Card flopCardB = Card.findByIdentifier(flopB)
 		Card flopCardC = Card.findByIdentifier(flopC)
+		MadeHandChecker mhc = new MadeHandChecker()
+		render mhc.getBestMadeHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC])
 		render evaluatorService.evaluateFlop(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC)
 	}
 	
