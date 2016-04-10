@@ -9,7 +9,19 @@ class HandProbability {
 		if(straightFlush){
 			println("straight flush made")
 		}
-		
+		else{
+			boolean openEndedStraightFlushDraw = checkForOpenEndedStraightFlushDraw(cards)
+			if(openEndedStraightFlushDraw){
+				println("open ended straight flush draw")
+			}
+			else{
+				boolean insideStraightFlushDraw = checkForInsideStraightFlushDraw(cards)
+				if(insideStraightFlushDraw){
+					println("inside straight flush draw")
+				}
+			}
+		}
+
 		boolean flush = checkForFlush(cards)
 		if(flush){
 			println("flush made")
@@ -56,16 +68,16 @@ class HandProbability {
 	def calculateTurnProbability(int outs){
 		return outs/47
 	}
-	
+
 	def calculateRiverProbability(int outs){
 		return outs/46
 	}
-	
+
 	def calculateTurnOrRiverProbability(int outs){
 		return 1-(((47-outs)/47) * ((46-outs)/46))
 	}
-	
-	
+
+
 	/********************************************************************************************************
 	 ************************************ INSIDE STRAIGHT FLUSH **********************************************
 	 *********************************************************************************************************/
@@ -78,27 +90,50 @@ class HandProbability {
 		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
 		suitedSets.each{
 			if(it.cards.size() >= 5){
-				boolean straightMade = checkForStraight(it.cards)
-				if(straightMade){
+				boolean flag = checkForStraight(it.cards)
+				if(flag){
 					straightFlushMade = true
 				}
 			}
 		}
 		return straightFlushMade
 	}
-	
-	boolean checkForInsightStraightFlushDraw(ArrayList<Card> cards){
-		def suitCounts = []
-		suitCounts.add(["name":"H","count":cards.findAll{it.suit == "H"}.size()])
-		suitCounts.add(["name":"D","count":cards.findAll{it.suit == "D"}.size()])
-		suitCounts.add(["name":"S","count":cards.findAll{it.suit == "S"}.size()])
-		suitCounts.add(["name":"C","count":cards.findAll{it.suit == "C"}.size()])
-		suitCounts.sort{-it.count}
-		int highestSuitCount = suitCounts[0].count
-		if(highestSuitCount == 4){
-			return true
+
+	boolean checkForOpenEndedStraightFlushDraw(ArrayList<Card> cards){
+		boolean found = false;
+		def suitedSets = []
+		suitedSets.add(["name":"H","cards":cards.findAll{it.suit == "H"}])
+		suitedSets.add(["name":"D","cards":cards.findAll{it.suit == "D"}])
+		suitedSets.add(["name":"S","cards":cards.findAll{it.suit == "S"}])
+		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
+		suitedSets.each{
+			if(it.cards.size() >= 4){
+				println("checking open ended for" : it.cards) 
+				boolean flag = checkForOpenEndedStraightDraw(it.cards)
+				if(flag){
+					found = true
+				}
+			}
 		}
-		return false
+		return found
+	}
+
+	boolean checkForInsideStraightFlushDraw(ArrayList<Card> cards){
+		boolean found = false;
+		def suitedSets = []
+		suitedSets.add(["name":"H","cards":cards.findAll{it.suit == "H"}])
+		suitedSets.add(["name":"D","cards":cards.findAll{it.suit == "D"}])
+		suitedSets.add(["name":"S","cards":cards.findAll{it.suit == "S"}])
+		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
+		suitedSets.each{
+			if(it.cards.size() >= 4){
+				boolean flag = checkForInsideStraightDraw(it.cards)
+				if(flag){
+					found = true
+				}
+			}
+		}
+		return found
 	}
 	/********************************************************************************************************
 	 ********************************************** FLUSH **************************************************** 
@@ -116,7 +151,7 @@ class HandProbability {
 		}
 		return false
 	}
-	
+
 	boolean checkForFlushDraw(ArrayList<Card> cards){
 		def suitCounts = []
 		suitCounts.add(["name":"H","count":cards.findAll{it.suit == "H"}.size()])
@@ -130,7 +165,7 @@ class HandProbability {
 		}
 		return false
 	}
-	
+
 	/********************************************************************************************************
 	 *****************************************  STRAIGHT  ******************************************************
 	 *********************************************************************************************************/
@@ -141,20 +176,20 @@ class HandProbability {
 		}
 		return false
 	}
-	
+
 	boolean checkForOpenEndedStraightDraw(ArrayList<Card> cards){
 		def cardList = getHighestConsecutiveCardList(cards)
-		if(cardList.first() > 1 && cardList.last() < 14){
+		if(cardList?.first() > 1 && cardList?.last() < 14){
 			if(cardList.size() >= 4){
 				return true
 			}
 		}
 		return false
 	}
-	
+
 	boolean checkForInsideStraightDraw(ArrayList<Card> cards){
 		def cardList = getHighestConsecutiveCardList(cards)
-		if(cardList.containsAll([1,2,3,4]) || cardList.containsAll([11,12,13,14]) || cardList.containsAll([10,11,12,14]) || cardList.containsAll([1,3,4,5])){
+		if(cardList.containsAll([1, 2, 3, 4]) || cardList.containsAll([11, 12, 13, 14]) || cardList.containsAll([10, 11, 12, 14]) || cardList.containsAll([1, 3, 4, 5])){
 			return true
 		}
 		def lists = []
@@ -166,7 +201,10 @@ class HandProbability {
 		numericList = numericList.unique()
 		for(int i =1; i<numericList.size();i++){
 			if(numericList[i-1]+1 == numericList[i]){
-				lists.add([numericList[i-1], numericList[i] ])
+				lists.add([
+					numericList[i-1],
+					numericList[i]
+				])
 			}
 		}
 		if(lists.size()>1){
@@ -177,9 +215,8 @@ class HandProbability {
 			}
 		}
 		return false
-		
 	}
-	
+
 	def getHighestConsecutiveCardList(ArrayList<Card> cards){
 		def numericList = cards.collect{it.numericValue}
 		if(numericList.contains(14)){
@@ -191,7 +228,7 @@ class HandProbability {
 		int bestConsecutiveCount = 0;
 		def currentConsecutiveCards = []
 		def bestConsecutiveCards = []
-		if(numericList.size() >= 5){
+		if(numericList.size() >= 2){
 			int previousValue = numericList[0]
 			currentConsecutiveCards.add(previousValue)
 			for(int i=1;i<numericList.size();i++){
@@ -212,5 +249,4 @@ class HandProbability {
 		}
 		return bestConsecutiveCards
 	}
-	
 }
