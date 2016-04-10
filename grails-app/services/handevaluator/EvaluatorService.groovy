@@ -55,8 +55,8 @@ class EvaluatorService {
 	}
 
 	def getChenCardGapValue(Card cardA, Card cardB){
-		int aVal = convertCardValueToInteger(cardA.value)
-		int bVal = convertCardValueToInteger(cardB.value)
+		int aVal = cardA.numericValue
+		int bVal = cardB.numericValue
 		int gap;
 		int gapScore;
 		if(aVal > bVal){
@@ -96,23 +96,4 @@ class EvaluatorService {
 		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC])
 	}
 
-	def convertCardValueToInteger(String value){
-		int cardIntegerVal;
-		if(value == "A"){
-			cardIntegerVal = 14
-		}
-		else if(value == "K"){
-			cardIntegerVal = 13
-		}
-		else if(value == "Q"){
-			cardIntegerVal = 12
-		}
-		else if(value == "J"){
-			cardIntegerVal = 11
-		}
-		else{
-			cardIntegerVal = Integer.parseInt(value)
-		}
-		return cardIntegerVal
-	}
 }
