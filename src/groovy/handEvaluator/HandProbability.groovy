@@ -72,6 +72,16 @@ class HandProbability {
 				}
 			}
 		}
+		boolean twoPair = checkForTwoPair(cards)
+		if(twoPair){
+			println("two pair")
+		}
+		else{
+			boolean twoPairDraw = checkForTwoPairDraw(cards)
+			if(twoPairDraw){
+				println("two pair draw")
+			}
+		}
 		return "done"
 	}
 
@@ -150,10 +160,10 @@ class HandProbability {
 	 *********************************************************************************************************/
 	boolean checkForFourOfAKind(ArrayList<Card> cards){
 		int highestCount = 0;
-		[2,3,4,5,6,7,8,9,10,11,12,13,14].each{ num ->
-			int count = cards.findAll{it.numericValue == num }?.size()
-			if(count > highestCount){
-				highestCount = count
+		def counts = cards.countBy{it.numericValue}
+		counts.each{ key, value ->
+			if(value > highestCount){
+				highestCount = value
 			}
 		}
 		if(highestCount == 4){
@@ -164,10 +174,10 @@ class HandProbability {
 
 	boolean checkForFourOfAKindDraw(ArrayList<Card> cards){
 		int highestCount = 0;
-		[2,3,4,5,6,7,8,9,10,11,12,13,14].each{ num ->
-		int count = cards.findAll{it.numericValue == num }?.size()
-			if(count > highestCount){
-				highestCount = count
+		def counts = cards.countBy{it.numericValue}
+		counts.each{ key, value ->
+			if(value > highestCount){
+				highestCount = value
 			}
 		}
 		if(highestCount == 3){
@@ -290,5 +300,28 @@ class HandProbability {
 			}
 		}
 		return bestConsecutiveCards
+	}
+	
+	/********************************************************************************************************
+	 **************************************** TWO PAIR *************************************************
+	 *********************************************************************************************************/
+	boolean checkForTwoPair(ArrayList<Card> cards){
+		int highestCount = 0;
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		if(secondCount[2] >= 2){
+			return true
+		}
+		return false
+	}
+
+	boolean checkForTwoPairDraw(ArrayList<Card> cards){
+		int highestCount = 0;
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		if(secondCount[2] == 1){
+			return true
+		}
+		return false
 	}
 }
