@@ -1,6 +1,5 @@
 package handevaluator
 
-import handEvaluator.MadeHandChecker
 import model.Card
 
 class EvaluatorController {
@@ -24,7 +23,10 @@ class EvaluatorController {
 		Card flopCardA = Card.findByIdentifier(flopA)
 		Card flopCardB = Card.findByIdentifier(flopB)
 		Card flopCardC = Card.findByIdentifier(flopC)
-		render evaluatorService.evaluateFlop(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC)
+		def res = evaluatorService.evaluateFlop(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC)
+		def drawList = res.draws
+		drawList = drawList.findAll{it.found == true}
+		render template:"/evaluator/flopAnalysis", model : [bestHand:res.hands, draws:drawList]
 	}
 	
 	def renderCardDisplay(int identifier){

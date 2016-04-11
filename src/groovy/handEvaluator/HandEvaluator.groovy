@@ -1,5 +1,6 @@
 package handEvaluator
 
+import handEvaluator.analysis.result.DrawAnalysisResult
 import java.util.ArrayList;
 
 import model.Card;
@@ -9,111 +10,56 @@ class HandEvaluator {
 	def analyzeFlop(ArrayList<Card> cards){
 		HandProbability hp = new HandProbability()
 		def madeHands = []
-		def resultList = []
+		def drawResultList = []
 		def draws = []
+		int handRank = 0;
 		if(checkForStraightFlush(cards)){
-			madeHands.add("straightFlush")
+			handRank = 8
 		}
-		else if(checkForOpenEndedStraightFlushDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"straightFlush")
-			rs.setTurnProbability(hp.calculateTurnProbability(2))
-			rs.setRiverProbability(hp.calculateRiverProbability(2))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(2))
-			resultList.add(rs)
+		else if(checkForFourOfAKind(cards)){
+			handRank = 7
 		}
-		else if(checkForInsideStraightFlushDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"straightFlush")
-			rs.setTurnProbability(hp.calculateTurnProbability(1))
-			rs.setRiverProbability(hp.calculateRiverProbability(1))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(1))
-			resultList.add(rs)
+		else if(checkForFullHouse(cards)){
+			handRank = 6
 		}
-
-		if(checkForFourOfAKind(cards)){
-			madeHands.add("fours")
+		else if(checkForFlush(cards)){
+			handRank = 5
 		}
-		else if(checkForFourOfAKindDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"fours")
-			rs.setTurnProbability(hp.calculateTurnProbability(1))
-			rs.setRiverProbability(hp.calculateRiverProbability(1))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(1))
-			resultList.add(rs)
+		else if(checkForStraight(cards)){
+			handRank = 4
+		}
+		else if(checkForThreeOfAKind(cards)){
+			handRank = 3
+		}
+		else if(checkForTwoPair(cards)){
+			handRank = 2
+		}
+		else if(checkForPair(cards)){
+			handRank = 1
 		}
 
-
-		if(checkForFlush(cards)){
-			madeHands.add("flush")
+		switch(handRank){
+			case 0:
+				drawResultList.add(checkForPairDraw(cards))
+			case 1:
+				drawResultList.add(checkForTwoPairDraw(cards))
+			case 2:
+				drawResultList.add(checkForThreeOfAKindDraw(cards))
+			case 3:
+				drawResultList.add(checkForOpenEndedStraightDraw(cards))
+				drawResultList.add(checkForInsideStraightDraw(cards))
+			case 4:
+				drawResultList.add(checkForFlushDraw(cards))
+			case 5:
+				drawResultList.add(checkForFullHouseDraw(cards))
+			case 6:
+				drawResultList.add(checkForFourOfAKindDraw(cards))
+			case 7:
+				drawResultList.add(checkForOpenEndedStraightFlushDraw(cards))
+				drawResultList.add(checkForInsideStraightFlushDraw(cards))
+				break;
 		}
-		else if(checkForFlushDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"flush")
-			rs.setTurnProbability(hp.calculateTurnProbability(9))
-			rs.setRiverProbability(hp.calculateRiverProbability(9))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(9))
-			resultList.add(rs)
-		}
-
-
-		if(checkForFullHouse(cards)){
-			madeHands.add("fullHouse")
-		}
-		else if(checkForFullHouseDraw(cards)){
-			if(checkForTwoPair(cards)){
-				ResultHolder rs = new ResultHolder(hand:"fullHouse")
-				rs.setTurnProbability(hp.calculateTurnProbability(4))
-				rs.setRiverProbability(hp.calculateRiverProbability(4))
-				rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(4))
-				resultList.add(rs)
-			}
-			else if(checkForThreeOfAKind(cards)){
-				ResultHolder rs = new ResultHolder(hand:"fullHouse")
-				rs.setTurnProbability(hp.calculateTurnProbability(6))
-				rs.setRiverProbability(hp.calculateRiverProbability(9))
-				rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(6,9))
-				resultList.add(rs)
-			}
-		}
-
-		if(checkForStraight(cards)){
-			madeHands.add("straight")
-		}
-		else if(checkForOpenEndedStraightDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"straight")
-			rs.setTurnProbability(hp.calculateTurnProbability(8))
-			rs.setRiverProbability(hp.calculateRiverProbability(8))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(8))
-			resultList.add(rs)
-		}
-		else if(checkForInsideStraightDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"straight")
-			rs.setTurnProbability(hp.calculateTurnProbability(4))
-			rs.setRiverProbability(hp.calculateRiverProbability(4))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(4))
-			resultList.add(rs)
-		}
-
-		if(checkForThreeOfAKind(cards)){
-			madeHands.add("3s")
-		}
-		else if(checkForThreeOfAKindDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"3s")
-			rs.setTurnProbability(hp.calculateTurnProbability(2))
-			rs.setRiverProbability(hp.calculateRiverProbability(2))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(2))
-			resultList.add(rs)
-		}
-
-		if(checkForTwoPair(cards)){
-			madeHands.add("2pair")
-		}
-		else if(checkForTwoPairDraw(cards)){
-			ResultHolder rs = new ResultHolder(hand:"2pair")
-			rs.setTurnProbability(hp.calculateTurnProbability(9))
-			rs.setRiverProbability(hp.calculateRiverProbability(12))
-			rs.setTurnOrRiverProbability(hp.calculateTurnOrRiverProbability(9,12))
-			resultList.add(rs)
-		}
-
-		return madeHands + resultList
+		return ["hands" : [handRank], "draws" :  drawResultList]
 	}
 
 	/********************************************************************************************************
@@ -137,7 +83,7 @@ class HandEvaluator {
 		return straightFlushMade
 	}
 
-	boolean checkForOpenEndedStraightFlushDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForOpenEndedStraightFlushDraw(ArrayList<Card> cards){
 		boolean found = false;
 		def suitedSets = []
 		suitedSets.add(["name":"H","cards":cards.findAll{it.suit == "H"}])
@@ -146,16 +92,17 @@ class HandEvaluator {
 		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
 		suitedSets.each{
 			if(it.cards.size() >= 4){
-				boolean flag = checkForOpenEndedStraightDraw(it.cards)
+				boolean flag = checkForOpenEndedStraightDraw(it.cards).found
 				if(flag){
 					found = true
 				}
 			}
 		}
-		return found
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"openEndedStraightFlush", turnOuts:2,riverOuts:2,found:found)
+		return result
 	}
 
-	boolean checkForInsideStraightFlushDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForInsideStraightFlushDraw(ArrayList<Card> cards){
 		boolean found = false;
 		def suitedSets = []
 		suitedSets.add(["name":"H","cards":cards.findAll{it.suit == "H"}])
@@ -164,13 +111,14 @@ class HandEvaluator {
 		suitedSets.add(["name":"C","cards":cards.findAll{it.suit == "C"}])
 		suitedSets.each{
 			if(it.cards.size() >= 4){
-				boolean flag = checkForInsideStraightDraw(it.cards)
+				boolean flag = checkForInsideStraightDraw(it.cards).found
 				if(flag){
 					found = true
 				}
 			}
 		}
-		return found
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"insideStraightFlush", turnOuts:1,riverOuts:1,found:found)
+		return result
 	}
 
 	/********************************************************************************************************
@@ -190,7 +138,7 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForFourOfAKindDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForFourOfAKindDraw(ArrayList<Card> cards){
 		int highestCount = 0;
 		def counts = cards.countBy{it.numericValue}
 		counts.each{ key, value ->
@@ -198,10 +146,9 @@ class HandEvaluator {
 				highestCount = value
 			}
 		}
-		if(highestCount == 3){
-			return true
-		}
-		return false
+		boolean found = (highestCount == 3)
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"fourOfAKind", turnOuts:1,riverOuts:1,found:found)
+		return result
 	}
 
 	/********************************************************************************************************
@@ -211,18 +158,32 @@ class HandEvaluator {
 		int highestCount = 0;
 		def counts = cards.countBy{it.numericValue}
 		def secondCount = counts.countBy{it.value}
-		if(secondCount[3] >= 1 && secondCount[2]>= 1){
+		if((secondCount[3] >= 2) || (secondCount[3] >= 1 && secondCount[2]>= 1)){
 			return true
 		}
 		return false
 	}
 
-	boolean checkForFullHouseDraw(ArrayList<Card> cards){
-		boolean twoPair = checkForTwoPair(cards)
-		boolean threes = checkForThreeOfAKind(cards)
-		if(twoPair || threes){
-			return true
+	DrawAnalysisResult checkForFullHouseDraw(ArrayList<Card> cards){
+		def counts = cards.countBy{it.numericValue}
+		def secondCount = counts.countBy{it.value}
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"fullHouse", found:false)
+		//three pair only counts on river
+		if(secondCount[2] == 3){
+			result.setFound(true)
+			result.setRiverOuts(6)
 		}
+		if(checkForTwoPair(cards)){
+			result.setFound(true)
+			result.setTurnOuts(4)
+			result.setRiverOuts(4)
+		}
+		if(checkForThreeOfAKind(cards)){
+			result.setFound(true)
+			result.setTurnOuts(6)
+			result.setRiverOuts(9)
+		}
+		return result
 	}
 
 	/********************************************************************************************************
@@ -242,7 +203,7 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForFlushDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForFlushDraw(ArrayList<Card> cards){
 		def suitCounts = []
 		suitCounts.add(["name":"H","count":cards.findAll{it.suit == "H"}.size()])
 		suitCounts.add(["name":"D","count":cards.findAll{it.suit == "D"}.size()])
@@ -250,10 +211,9 @@ class HandEvaluator {
 		suitCounts.add(["name":"C","count":cards.findAll{it.suit == "C"}.size()])
 		suitCounts.sort{-it.count}
 		int highestSuitCount = suitCounts[0].count
-		if(highestSuitCount == 4){
-			return true
-		}
-		return false
+		boolean found = (highestSuitCount == 4)
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"flush", turnOuts:9,riverOuts:9,found:found)
+		return result
 	}
 
 	/********************************************************************************************************
@@ -267,44 +227,57 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForOpenEndedStraightDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForOpenEndedStraightDraw(ArrayList<Card> cards){
 		def cardList = getHighestConsecutiveCardList(cards)
+		//turn 8
+		//river 8
+		boolean found = false
 		if(cardList?.first() > 1 && cardList?.last() < 14){
 			if(cardList.size() >= 4){
-				return true
+				found = true
 			}
 		}
-		return false
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"openEndedStraight", turnOuts:8,riverOuts:8,found:found)
+		return result
 	}
 
-	boolean checkForInsideStraightDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForInsideStraightDraw(ArrayList<Card> cards){
 		def cardList = getHighestConsecutiveCardList(cards)
+		boolean found = false
 		if(cardList.containsAll([1, 2, 3, 4]) || cardList.containsAll([11, 12, 13, 14]) || cardList.containsAll([10, 11, 12, 14]) || cardList.containsAll([1, 3, 4, 5])){
-			return true
+			found = true
 		}
-		def lists = []
-		def numericList = cards.collect{it.numericValue}
-		if(numericList.contains(14)){
-			numericList.add(1)
-		}
-		numericList.sort()
-		numericList = numericList.unique()
-		for(int i =1; i<numericList.size();i++){
-			if(numericList[i-1]+1 == numericList[i]){
-				lists.add([
-					numericList[i-1],
-					numericList[i]
-				])
+		else{
+			def lists = []
+			def numericList = cards.collect{it.numericValue}
+			if(numericList.contains(14)){
+				numericList.add(1)
 			}
-		}
-		if(lists.size()>1){
-			for(int i =1; i<lists.size();i++){
-				if(lists[i-1].last()+2 == lists[i].first()){
-					return true
+			numericList.sort()
+			numericList = numericList.unique()
+			def currentOrderedList = [numericList[0]]
+			for(int i =1; i<numericList.size();i++){
+				if(numericList[i-1]+1 == numericList[i]){
+					currentOrderedList.add(numericList[i])
+				}
+				else{
+					lists.add(currentOrderedList)
+					currentOrderedList = [numericList[i]]
+				}
+				if(i== numericList.size()-1){
+					lists.add(currentOrderedList)
+				}
+			}
+			if(lists.size()>1){
+				for(int i =1; i<lists.size();i++){
+					if(lists[i-1].last()+2 == lists[i].first() && ((lists[i-1].size() + lists[i].size()) >= 4)){
+						found =  true
+					}
 				}
 			}
 		}
-		return false
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"insideStraight", turnOuts:4,riverOuts:4,found:found)
+		return result
 	}
 
 	def getHighestConsecutiveCardList(ArrayList<Card> cards){
@@ -354,14 +327,18 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForThreeOfAKindDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForThreeOfAKindDraw(ArrayList<Card> cards){
 		int highestCount = 0;
 		def counts = cards.countBy{it.numericValue}
 		def secondCount = counts.countBy{it.value}
-		if(secondCount[2] >= 1){
-			return true
+		def pairs = secondCount[2]
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"threeOfAKind", found:false)
+		if(pairs >= 1){
+			result.setTurnOuts(pairs*2)
+			result.setRiverOuts(pairs*2)
+			result.setFound(true)
 		}
-		return false
+		return result
 	}
 
 	/********************************************************************************************************
@@ -377,14 +354,13 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForTwoPairDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForTwoPairDraw(ArrayList<Card> cards){
 		int highestCount = 0;
 		def counts = cards.countBy{it.numericValue}
 		def secondCount = counts.countBy{it.value}
-		if(secondCount[2] == 1){
-			return true
-		}
-		return false
+		def found = (secondCount[2] == 1)
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"twoPair", found:found, turnOuts:9,riverOuts:12)
+		return result
 	}
 
 	/********************************************************************************************************
@@ -400,13 +376,13 @@ class HandEvaluator {
 		return false
 	}
 
-	boolean checkForPairDraw(ArrayList<Card> cards){
+	DrawAnalysisResult checkForPairDraw(ArrayList<Card> cards){
 		int highestCount = 0;
 		def counts = cards.countBy{it.numericValue}
 		def secondCount = counts.countBy{it.value}
-		if(secondCount[2] == 1){
-			return true
-		}
-		return false
+
+		def found = (secondCount[2] == 0)
+		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"pair", found:found, turnOuts:15,riverOuts:18)
+		return result
 	}
 }
