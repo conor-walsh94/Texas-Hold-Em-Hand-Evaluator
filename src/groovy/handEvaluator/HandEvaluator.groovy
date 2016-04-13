@@ -9,7 +9,6 @@ class HandEvaluator {
 
 	def analyzeFlop(ArrayList<Card> cards){
 		HandProbability hp = new HandProbability()
-		def madeHands = []
 		def drawResultList = []
 		def draws = []
 		int handRank = 0;
@@ -59,7 +58,7 @@ class HandEvaluator {
 				drawResultList.add(checkForInsideStraightFlushDraw(cards))
 				break;
 		}
-		return ["hands" : [handRank], "draws" :  drawResultList]
+		return ["handRank" : handRank, "draws" :  drawResultList]
 	}
 
 	/********************************************************************************************************

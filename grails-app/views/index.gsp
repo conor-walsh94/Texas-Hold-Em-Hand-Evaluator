@@ -80,13 +80,8 @@ div[class*='suit']:after {
 								</g:each>
 					</div>
 				</div>
-				<div class="row">
-					<h3>Settings</h3>
-					Players
-					<g:select name="players" from="[1,2,3,4,5,6,7,8]" value="8"></g:select>
-				</div>
 			</div>
-			<div class="col-xs-7">
+			<div class="col-xs-3">
 			<div class="row">
 					<h3>Pocket Cards</h3>
 					<div id="pocket-pair">
@@ -104,7 +99,9 @@ div[class*='suit']:after {
 						<div id="river"></div>
 					</div>
 				</div>
-				<div class="row">
+			</div>
+			<div class="col-xs-4">
+			<div class="row">
 					<div id="result"></div>
 				</div>
 			</div>

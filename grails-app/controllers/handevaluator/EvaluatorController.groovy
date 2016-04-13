@@ -26,7 +26,7 @@ class EvaluatorController {
 		def res = evaluatorService.evaluateFlop(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC)
 		def drawList = res.draws
 		drawList = drawList.findAll{it.found == true}
-		render template:"/evaluator/flopAnalysis", model : [bestHand:res.hands, draws:drawList]
+		render template:"/evaluator/flopAnalysis", model : [handRank:res.handRank, draws:drawList]
 	}
 	
 	def renderCardDisplay(int identifier){

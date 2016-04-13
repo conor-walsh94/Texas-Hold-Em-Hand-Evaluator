@@ -1,6 +1,5 @@
 package handEvaluator
 
-import handEvaluator.analysis.result.DrawResult
 import model.Card
 
 class HandProbability {
