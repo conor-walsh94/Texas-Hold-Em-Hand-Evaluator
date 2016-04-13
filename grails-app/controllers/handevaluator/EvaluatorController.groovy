@@ -29,6 +29,19 @@ class EvaluatorController {
 		render template:"/evaluator/flopAnalysis", model : [handRank:res.handRank, draws:drawList]
 	}
 	
+	def evaluateTurn(int cardA, int cardB, int flopA, int flopB,int flopC, int turn){
+		Card pocketCardA = Card.findByIdentifier(cardA)
+		Card pocketCardB = Card.findByIdentifier(cardB)
+		Card flopCardA = Card.findByIdentifier(flopA)
+		Card flopCardB = Card.findByIdentifier(flopB)
+		Card flopCardC = Card.findByIdentifier(flopC)
+		Card turnCard = Card.findByIdentifier(turn)
+		def res = evaluatorService.evaluateTurn(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard)
+		def drawList = res.draws
+		drawList = drawList.findAll{it.found == true}
+		render template:"/evaluator/turnAnalysis", model : [handRank:res.handRank, draws:drawList]
+	}
+	
 	def renderCardDisplay(int identifier){
 		Card card = Card.findByIdentifier(identifier)
 		render template : "/card/card", model : [card:card]

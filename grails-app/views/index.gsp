@@ -186,6 +186,29 @@ div[class*='suit']:after {
 								}
 							})	
 						}
+						if(target == "#turn"){
+							jQuery.ajax({
+								url : '<g:createLink controller="evaluator" action="evaluateTurn"/>',
+								type : "POST",
+								data : {
+									"cardA" : $("#cardA").find("#cardValue").val(),
+									"cardB" : $("#cardB").find("#cardValue").val(),
+									"flopA" : $("#flopA").find("#cardValue").val(),
+									"flopB" : $("#flopB").find("#cardValue").val(),
+									"flopC" : $("#flopC").find("#cardValue").val(),
+									"turn" : $("#turn").find("#cardValue").val()
+								},
+								success : function(html) {
+									$("#result").html(html);
+								},
+								error : function(request,
+										status, error) {
+									handleAjaxError(request,
+											status, error);
+								}
+							})	
+
+						}
 					},
 					error : function(request,
 							status, error) {

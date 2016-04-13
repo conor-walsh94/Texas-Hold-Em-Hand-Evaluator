@@ -96,5 +96,10 @@ class EvaluatorService {
 		HandEvaluator hp = new HandEvaluator()
 		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC])
 	}
+	
+	def evaluateTurn(Card pocketA, Card pocketB, Card flopA, Card flopB, Card flopC, Card turn){
+		HandEvaluator hp = new HandEvaluator()
+		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC,turn])
+	}
 
 }
