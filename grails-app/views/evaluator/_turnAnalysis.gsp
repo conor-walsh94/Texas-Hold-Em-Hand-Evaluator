@@ -5,6 +5,6 @@
 <br>
 <div>
 <p>Hand : <b><g:message code="hand.draw.${draw.identifier}.message"></g:message></b></p>
-<p>River Outs : ${draw.riverOuts}</p>
+<p>Make on River : <g:renderRiverProbability outs="${draw.riverOuts}"/></p>
 </div>
 </g:each>

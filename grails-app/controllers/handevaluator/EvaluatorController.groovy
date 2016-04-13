@@ -23,10 +23,10 @@ class EvaluatorController {
 		Card flopCardA = Card.findByIdentifier(flopA)
 		Card flopCardB = Card.findByIdentifier(flopB)
 		Card flopCardC = Card.findByIdentifier(flopC)
-		def res = evaluatorService.evaluateFlop(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC)
-		def drawList = res.draws
+		def drawList = evaluatorService.getPossibleDraws([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC])
+		def handRank = evaluatorService.getBestHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC])
 		drawList = drawList.findAll{it.found == true}
-		render template:"/evaluator/flopAnalysis", model : [handRank:res.handRank, draws:drawList]
+		render template:"/evaluator/flopAnalysis", model : [handRank:handRank, draws:drawList]
 	}
 	
 	def evaluateTurn(int cardA, int cardB, int flopA, int flopB,int flopC, int turn){
@@ -36,10 +36,22 @@ class EvaluatorController {
 		Card flopCardB = Card.findByIdentifier(flopB)
 		Card flopCardC = Card.findByIdentifier(flopC)
 		Card turnCard = Card.findByIdentifier(turn)
-		def res = evaluatorService.evaluateTurn(pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard)
-		def drawList = res.draws
+		def drawList = evaluatorService.getPossibleDraws([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard])
+		def handRank = evaluatorService.getBestHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard])
 		drawList = drawList.findAll{it.found == true}
-		render template:"/evaluator/turnAnalysis", model : [handRank:res.handRank, draws:drawList]
+		render template:"/evaluator/turnAnalysis", model : [handRank:handRank, draws:drawList]
+	}
+	
+	def evaluateHand(int cardA, int cardB, int flopA, int flopB,int flopC, int turn, int river){
+		Card pocketCardA = Card.findByIdentifier(cardA)
+		Card pocketCardB = Card.findByIdentifier(cardB)
+		Card flopCardA = Card.findByIdentifier(flopA)
+		Card flopCardB = Card.findByIdentifier(flopB)
+		Card flopCardC = Card.findByIdentifier(flopC)
+		Card turnCard = Card.findByIdentifier(turn)
+		Card riverCard = Card.findByIdentifier(river)
+		def handRank = evaluatorService.getBestHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard,riverCard])
+		render template:"/evaluator/handAnalysis", model : [handRank:handRank]
 	}
 	
 	def renderCardDisplay(int identifier){

@@ -92,14 +92,15 @@ class EvaluatorService {
 		return gapScore
 	}
 	
-	def evaluateFlop(Card pocketA, Card pocketB, Card flopA, Card flopB, Card flopC){
+	def getBestHand(ArrayList<Card> cards){
 		HandEvaluator hp = new HandEvaluator()
-		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC])
+		return hp.getBestHand(cards)
 	}
 	
-	def evaluateTurn(Card pocketA, Card pocketB, Card flopA, Card flopB, Card flopC, Card turn){
+	def getPossibleDraws(ArrayList<Card> cards){
 		HandEvaluator hp = new HandEvaluator()
-		return hp.analyzeFlop([pocketA, pocketB, flopA, flopB,flopC,turn])
+		return hp.analyzeHand(cards)
 	}
+	
 
 }

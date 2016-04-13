@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import model.Card;
 
 class HandEvaluator {
-
-	def analyzeFlop(ArrayList<Card> cards){
+	
+	int getBestHand(ArrayList<Card> cards){
 		HandProbability hp = new HandProbability()
-		def drawResultList = []
-		def draws = []
 		int handRank = 0;
 		if(checkForStraightFlush(cards)){
 			handRank = 8
@@ -36,7 +34,12 @@ class HandEvaluator {
 		else if(checkForPair(cards)){
 			handRank = 1
 		}
+		return handRank
+	}
 
+	def analyzeHand(ArrayList<Card> cards){
+		int handRank = getBestHand(cards)
+		def drawResultList = []
 		switch(handRank){
 			case 0:
 				drawResultList.add(checkForPairDraw(cards))
@@ -58,7 +61,7 @@ class HandEvaluator {
 				drawResultList.add(checkForInsideStraightFlushDraw(cards))
 				break;
 		}
-		return ["handRank" : handRank, "draws" :  drawResultList]
+		return  drawResultList
 	}
 
 	/********************************************************************************************************
@@ -380,7 +383,7 @@ class HandEvaluator {
 		def counts = cards.countBy{it.numericValue}
 		def secondCount = counts.countBy{it.value}
 
-		def found = (secondCount[2] == 0)
+		def found = (secondCount[2] == null)
 		DrawAnalysisResult result = new DrawAnalysisResult(identifier:"pair", found:found, turnOuts:15,riverOuts:18)
 		return result
 	}
