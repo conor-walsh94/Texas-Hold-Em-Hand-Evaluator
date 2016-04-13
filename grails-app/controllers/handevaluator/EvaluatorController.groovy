@@ -25,7 +25,7 @@ class EvaluatorController {
 		Card flopCardC = Card.findByIdentifier(flopC)
 		def drawList = evaluatorService.getPossibleDraws([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC])
 		def handRank = evaluatorService.getBestHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC])
-		drawList = drawList.findAll{it.found == true}
+		drawList = drawList.findAll{it.found == true}.sort{-it?.turnOuts}
 		render template:"/evaluator/flopAnalysis", model : [handRank:handRank, draws:drawList]
 	}
 	
@@ -38,7 +38,7 @@ class EvaluatorController {
 		Card turnCard = Card.findByIdentifier(turn)
 		def drawList = evaluatorService.getPossibleDraws([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard])
 		def handRank = evaluatorService.getBestHand([pocketCardA, pocketCardB, flopCardA, flopCardB, flopCardC,turnCard])
-		drawList = drawList.findAll{it.found == true}
+		drawList = drawList.findAll{it.found == true}.sort{-it?.riverOuts}
 		render template:"/evaluator/turnAnalysis", model : [handRank:handRank, draws:drawList]
 	}
 	
